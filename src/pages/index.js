@@ -1,4 +1,7 @@
-import * as React from "react"
+import React, { useState } from "react"
+import { useStaticQuery, graphql } from "gatsby"
+import { ConfigProvider, Button, Flex, Menu } from 'antd';
+import FilterButton from "../components/FilterButton";
 
 const pageStyles = {
   color: "#232129",
@@ -123,9 +126,106 @@ const links = [
   },
 ]
 
+const tabItems = [
+  {
+    label: 'IAEA Profession',
+    key: 'iaea_profession',
+  },
+  {
+    label: 'Nationality',
+    key: 'nationality',
+  },
+  {
+    label: 'Academic',
+    key: 'academic',
+  },
+  {
+    label: 'Pre-IAEA Work Experience',
+    key: 'work_experience',
+  },
+  {
+    label: 'Generational',
+    key: 'generational',
+  },
+];
+
 const IndexPage = () => {
+
+  const [currentTab, setCurrentTab] = useState('iaea_profession');
+  const handleMenuClick = (e) => {
+    console.log('click ', e);
+    setCurrentTab(e.key);
+  };
+
+  const renderContent = () => {
+    switch (currentTab) {
+      case 'iaea_profession':
+        return <FilterButton data={professions} />
+      case 'nationality':
+        return <div>This is content for Tab 2</div>;
+      case 'academic':
+        return <div>This is content for Tab 3</div>;
+      case 'work_experience':
+        return <div>This is content for Tab 3</div>;
+      case 'generational':
+        return <FilterButton data={generations} />
+      default:
+        return <div>Something went wrong!</div>;
+    }
+  };
+
+  const data = useStaticQuery(graphql`
+    query {
+      allStaffInfoCsv {
+        edges {
+          node {
+            Staff_ID
+            Name
+            Gender
+            IAEA_Profession
+            Nationality
+            Academic
+            Pre_IAEA_Work_Experience
+            Generational
+          }
+        }
+      }
+    }
+  `);
+
+  const professions = data.allStaffInfoCsv.edges.map(row => row.node.IAEA_Profession);
+  const uniqueProfessions = Array.from(new Set(professions));
+
+  const generations = data.allStaffInfoCsv.edges.map(row => row.node.Generational);
+
   return (
     <main style={pageStyles}>
+      <ConfigProvider
+      theme={{
+        components: {
+          Menu: {
+            horizontalItemHoverColor: '#ffffff',
+            horizontalItemSelectedColor: '#ffffff', 
+            itemBg: '#599fe6'
+          },
+        },
+      }}
+    >
+      <Menu onClick={handleMenuClick} selectedKeys={[currentTab]} mode="horizontal" items={tabItems} />
+    </ConfigProvider>
+
+    {renderContent()}
+      {uniqueProfessions.map(profession => (
+          <Button>{profession}</Button>
+        ))}
+
+      <ul>
+        {data.allStaffInfoCsv.edges.map(row => (
+          <li key={row.node.Staff_ID}>
+            Field 1: {row.node.Name}, Field 2: {row.node.Gender}, Field 3: {row.node.IAEA_Profession}
+          </li>
+        ))}
+      </ul>
       <h1 style={headingStyles}>
         Congratulations
         <br />
