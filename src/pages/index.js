@@ -1,7 +1,10 @@
 import React, { useState } from "react"
 import { useStaticQuery, graphql } from "gatsby"
-import { ConfigProvider, Button, Flex, Menu } from 'antd';
+import { ConfigProvider, Button, Flex, Menu, Avatar, Card } from 'antd';
 import FilterButton from "../components/FilterButton";
+
+const { Meta } = Card;
+
 
 const pageStyles = {
   color: "#232129",
@@ -149,6 +152,16 @@ const tabItems = [
   },
 ];
 
+const FilterPanel = ({data}) => {
+  return (
+    <>
+      {data.map(item => (
+        <Button>{item}</Button>
+      ))}
+    </>
+    )
+}
+
 const IndexPage = () => {
 
   const [currentTab, setCurrentTab] = useState('iaea_profession');
@@ -162,11 +175,11 @@ const IndexPage = () => {
       case 'iaea_profession':
         return <FilterButton data={professions} />
       case 'nationality':
-        return <div>This is content for Tab 2</div>;
+        return <FilterPanel data={uniqueNationalities} />
       case 'academic':
-        return <div>This is content for Tab 3</div>;
+        return <FilterPanel data={uniqueAcademic} />
       case 'work_experience':
-        return <div>This is content for Tab 3</div>;
+        return <FilterPanel data={uniqueWorkExperience}/>
       case 'generational':
         return <FilterButton data={generations} />
       default:
@@ -198,6 +211,15 @@ const IndexPage = () => {
 
   const generations = data.allStaffInfoCsv.edges.map(row => row.node.Generational);
 
+  const nationalities = data.allStaffInfoCsv.edges.map(row => row.node.Nationality);
+  const uniqueNationalities = Array.from(new Set(nationalities));
+
+  const academic = data.allStaffInfoCsv.edges.map(row => row.node.Academic);
+  const uniqueAcademic = Array.from(new Set(academic));
+
+  const workExperience = data.allStaffInfoCsv.edges.map(row => row.node.Pre_IAEA_Work_Experience);
+  const uniqueWorkExperience = Array.from(new Set(workExperience));
+
   return (
     <main style={pageStyles}>
       <ConfigProvider
@@ -215,15 +237,21 @@ const IndexPage = () => {
     </ConfigProvider>
 
     {renderContent()}
-      {uniqueProfessions.map(profession => (
-          <Button>{profession}</Button>
-        ))}
 
+   
       <ul>
         {data.allStaffInfoCsv.edges.map(row => (
-          <li key={row.node.Staff_ID}>
-            Field 1: {row.node.Name}, Field 2: {row.node.Gender}, Field 3: {row.node.IAEA_Profession}
-          </li>
+           <Card
+           style={{
+             width: 300,
+           }}
+         >
+           <Meta
+             avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />}
+             title={row.node.Name}
+             description={row.node.IAEA_Profession}
+           />
+         </Card>
         ))}
       </ul>
       <h1 style={headingStyles}>
