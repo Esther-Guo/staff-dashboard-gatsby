@@ -7,9 +7,8 @@ const RAINBOW_COLORS = [
     "#F3722C", "#577590"
   ];
 
-const FilterButton = ({ data }) => {
-    // State to track the selected filter
-    const [selectedFilter, setSelectedFilter] = useState(null);
+const FilterButton = ({ data, onFilterClick }) => {
+
   
     // Aggregate data to get counts per category
     const categoryCounts = data.reduce((acc, item) => {
@@ -17,10 +16,7 @@ const FilterButton = ({ data }) => {
       return acc;
     }, {});
   
-    // Function to handle filter click
-    const handleFilterClick = (category) => {
-      setSelectedFilter(category === selectedFilter ? null : category);
-    };
+
 
     // Function to determine size based on count
     const getSizeForCount = (count) => {
@@ -41,7 +37,7 @@ const FilterButton = ({ data }) => {
                 height: `${getSizeForCount(count)}px`,
                 borderRadius: '50%', // Makes the button round
                 }}
-                onClick={() => handleFilterClick(category)}
+                onClick={() => onFilterClick(category)}
             >
                 {category} ({count})
             </button>
