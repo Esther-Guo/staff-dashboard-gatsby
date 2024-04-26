@@ -21,20 +21,6 @@ const mainContentStyle = {
   padding: "24px 24px"
 }
 
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
-const items = [
-  {
-    key: '1',
-    label: 'More',
-    children: <p>{text}</p>,
-  },
-  
-];
-
 const tabItems = [
   {
     label: 'IAEA Profession',
@@ -58,20 +44,31 @@ const tabItems = [
   },
 ];
 
-const FilterPanel = ({data, onFilterClick}) => {
-  return (
-    <>
-      {data.map(item => (
-        <Button key={item} onClick={() => onFilterClick(item)} 
-          style={{
-            backgroundImage: `url(https://flagcdn.com/w160/${item.toLowerCase()}.png)`,
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover',
-            height: '100px'
-          }}>{item}</Button>
-      ))}
-    </>
-    )
+const FilterPanel = ({showFlag, data, onFilterClick}) => {
+  if (showFlag) 
+    return (
+      <>
+        {data.map(item => (
+          <Button key={item} onClick={() => onFilterClick(item)} 
+            style={{
+              backgroundImage: `url(https://flagcdn.com/w80/${item.toLowerCase()}.png)`,
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              width: '80px',
+              height: '50px'
+            }}></Button>
+        ))}
+      </>
+      )
+    else
+    return (
+      <>
+        {data.map(item => (
+          <Button key={item} onClick={() => onFilterClick(item)}>{item}</Button>
+        ))}
+      </>
+      )
 }
 
 const StaffCard = ({ filterType, filterValue, data }) => {
@@ -84,21 +81,32 @@ const StaffCard = ({ filterType, filterValue, data }) => {
       style={{
         width: 300,
       }}
+      styles={{
+        body: {
+          height: "100%",
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between', // Not sure why it has gap pn top&bottom
+          padding: '10px'
+        }
+      }}
       >
+
         <Meta
           avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />}
           title={row.node.Name}
           description={row.node.IAEA_Profession}
         />
         <Collapse ghost items={[
-    {
-      key: '1',
-      label: 'More',
-      children: <><p>Nationality: {row.node.Nationality}</p>
-      <p>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience}</p>
-      <p>Generational: {row.node.Generational}</p></>,
-    }
-  ]} />
+          {
+            key: '1',
+            label: 'More',
+            children: <><p>Nationality: {row.node.Nationality}</p>
+            <p>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience}</p>
+            <p>Generational: {row.node.Generational}</p></>,
+          }
+        ]} />
+
       </Card>
    ))}
    </>
@@ -109,11 +117,10 @@ const IndexPage = () => {
 
   const [currentTab, setCurrentTab] = useState('IAEA_Profession');
   const [filterValue, setFilterValue] = useState("");
-  // const [selectedProfession, setSelectedProfession] = useState("");
   const onSearch = (value, _e, info) => console.log(info?.source, value);
 
   const handleMenuClick = (e) => {
-    console.log('click ', e);
+    // console.log('click ', e);
     setCurrentTab(e.key);
     setFilterValue("");
   };
@@ -147,9 +154,9 @@ const IndexPage = () => {
       case 'Nationality':
         return (
           <Flex gap="large">
-            <Sider width="160" style={siderStyle}>
-              <Flex vertical gap="middle">
-                <FilterPanel data={uniqueNations} onFilterClick={handleFilterClick} />
+            <Sider width="180" style={siderStyle}>
+              <Flex gap="middle" wrap="wrap">
+                <FilterPanel showFlag={true} data={uniqueNations} onFilterClick={handleFilterClick} />
               </Flex>
             </Sider>
             <Content>
@@ -197,7 +204,7 @@ const IndexPage = () => {
               <Flex wrap="wrap" gap="middle">
                 <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
               </Flex>
-              <Button key="back" onClick={() => setFilterValue("")}>Back</Button>
+              <Button key="back" onClick={() => setFilterValue("")} style={{margin: "16px 0"}}>Back</Button>
             </Content>
           )
         else
