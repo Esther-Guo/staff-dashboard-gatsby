@@ -1,11 +1,25 @@
 import React, { useState } from "react"
 import { useStaticQuery, graphql } from "gatsby"
-import { ConfigProvider, Button, Flex, Menu, Avatar, Card, Collapse, Layout} from 'antd';
+import { ConfigProvider, Button, Flex, Menu, Avatar, Card, Collapse, Layout, Typography, Input} from 'antd';
 import FilterButton from "../components/FilterButton";
 
 const { Meta } = Card;
 
 const { Header, Footer, Sider, Content } = Layout;
+const { Title } = Typography;
+const { Search } = Input;
+
+const siderStyle = {
+  // textAlign: 'center',
+  // lineHeight: '120px',
+  // color: '#fff',
+  backgroundColor: '#599fe6',
+};
+
+const mainContentStyle = {
+  minWidth: "100%",
+  padding: "24px 24px"
+}
 
 const text = `
   A dog is a type of domesticated animal.
@@ -15,7 +29,7 @@ const text = `
 const items = [
   {
     key: '1',
-    label: 'This is panel header 1',
+    label: 'More',
     children: <p>{text}</p>,
   },
   
@@ -48,7 +62,13 @@ const FilterPanel = ({data, onFilterClick}) => {
   return (
     <>
       {data.map(item => (
-        <Button key={item} onClick={() => onFilterClick(item)}>{item}</Button>
+        <Button key={item} onClick={() => onFilterClick(item)} 
+          style={{
+            backgroundImage: `url(https://flagcdn.com/w160/${item.toLowerCase()}.png)`,
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+            height: '100px'
+          }}>{item}</Button>
       ))}
     </>
     )
@@ -56,6 +76,7 @@ const FilterPanel = ({data, onFilterClick}) => {
 
 const StaffCard = ({ filterType, filterValue, data }) => {
   const filtered = data.filter(item => !filterValue || item.node[filterType] === filterValue)
+
   return (
     <>
     {filtered.map(row => (
@@ -69,7 +90,15 @@ const StaffCard = ({ filterType, filterValue, data }) => {
           title={row.node.Name}
           description={row.node.IAEA_Profession}
         />
-        <Collapse ghost items={items} />
+        <Collapse ghost items={[
+    {
+      key: '1',
+      label: 'More',
+      children: <><p>Nationality: {row.node.Nationality}</p>
+      <p>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience}</p>
+      <p>Generational: {row.node.Generational}</p></>,
+    }
+  ]} />
       </Card>
    ))}
    </>
@@ -81,6 +110,7 @@ const IndexPage = () => {
   const [currentTab, setCurrentTab] = useState('IAEA_Profession');
   const [filterValue, setFilterValue] = useState("");
   // const [selectedProfession, setSelectedProfession] = useState("");
+  const onSearch = (value, _e, info) => console.log(info?.source, value);
 
   const handleMenuClick = (e) => {
     console.log('click ', e);
@@ -97,41 +127,43 @@ const IndexPage = () => {
       case 'IAEA_Profession':
         if (filterValue) 
           return (
-            <Content>
-            <Flex wrap="wrap" gap="middle">
-              <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
-            </Flex>
-            <Button key="back" onClick={() => setFilterValue("")}>Back</Button>
-          </Content>
+              <Content>
+              <Flex wrap="wrap" gap="middle">
+                <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
+              </Flex>
+              <Button key="back" onClick={() => setFilterValue("")} style={{margin: "16px 0"}}>Back</Button>
+            </Content>
+
           )
         else
           return (
+
+            <Content>
         
         <FilterButton data={professions} onFilterClick={handleFilterClick} />
+        </Content>
+
             )
       case 'Nationality':
         return (
-          <Layout>
-          <Flex gap="middle">
-            <Sider width="25%">
+          <Flex gap="large">
+            <Sider width="160" style={siderStyle}>
               <Flex vertical gap="middle">
-                <FilterPanel data={uniqueNationalities} onFilterClick={handleFilterClick} />
+                <FilterPanel data={uniqueNations} onFilterClick={handleFilterClick} />
               </Flex>
             </Sider>
             <Content>
               <Flex wrap="wrap" gap="middle">
-                <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
+                <StaffCard filterType="iso_alpha" filterValue={filterValue} data={data} />
               </Flex>
             </Content>
           </Flex>
-          </Layout>
         )
 
       case 'Academic':
         return (
-          <Layout>
-          <Flex gap="middle">
-            <Sider width="25%">
+          <Flex gap="large">
+            <Sider width="250" style={siderStyle}>
               <Flex vertical gap="middle">
                 <FilterPanel data={uniqueAcademic} onFilterClick={handleFilterClick} />
               </Flex>
@@ -142,13 +174,11 @@ const IndexPage = () => {
               </Flex>
             </Content>
           </Flex>
-          </Layout>
         )
       case 'Pre_IAEA_Work_Experience':
         return (
-          <Layout>
-          <Flex gap="middle">
-            <Sider width="25%">
+          <Flex gap="large">
+            <Sider width="200" style={siderStyle}>
               <Flex vertical gap="middle">
                 <FilterPanel data={uniqueWorkExperience} onFilterClick={handleFilterClick} />
               </Flex>
@@ -159,22 +189,22 @@ const IndexPage = () => {
               </Flex>
             </Content>
           </Flex>
-          </Layout>
         )
       case 'Generational':
         if (filterValue) 
           return (
             <Content>
-            <Flex wrap="wrap" gap="middle">
-              <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
-            </Flex>
-            <Button key="back" onClick={() => setFilterValue("")}>Back</Button>
-          </Content>
+              <Flex wrap="wrap" gap="middle">
+                <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
+              </Flex>
+              <Button key="back" onClick={() => setFilterValue("")}>Back</Button>
+            </Content>
           )
         else
           return (
-        
-        <FilterButton data={generations} onFilterClick={handleFilterClick} />
+            <Content>
+              <FilterButton data={generations} onFilterClick={handleFilterClick} />
+            </Content>
             )
       default:
         return <div>Something went wrong!</div>;
@@ -191,6 +221,7 @@ const IndexPage = () => {
             Gender
             IAEA_Profession
             Nationality
+            iso_alpha
             Academic
             Pre_IAEA_Work_Experience
             Generational
@@ -207,6 +238,9 @@ const IndexPage = () => {
   const nationalities = data.map(row => row.node.Nationality);
   const uniqueNationalities = Array.from(new Set(nationalities));
 
+  const nations = data.map(row => row.node.iso_alpha);
+  const uniqueNations = Array.from(new Set(nations));
+
   const academic = data.map(row => row.node.Academic);
   const uniqueAcademic = Array.from(new Set(academic));
 
@@ -214,32 +248,41 @@ const IndexPage = () => {
   const uniqueWorkExperience = Array.from(new Set(workExperience));
 
   return (
-    <Layout>
+    <div style={{padding: "36px 12px"}}>
       <ConfigProvider
       theme={{
+        token: {
+          fontSize: 16
+        },
         components: {
           Layout: {
             bodyBg: '#599fe6',
-            siderBg: '#599fe6'
           },
           Menu: {
             horizontalItemHoverColor: '#ffffff',
             horizontalItemSelectedColor: '#ffffff', 
+            itemHoverColor: '#ffffff',
             itemBg: '#599fe6'
           },
+          Collapse: {
+            headerPadding: "16px 0 0 0",
+            contentPadding: "0"
+          }
         },
       }}
     >
-      {/* <Header> */}
-        <Menu onClick={handleMenuClick} selectedKeys={[currentTab]} mode="horizontal" items={tabItems} />
-      {/* </Header> */}
-
-      {renderContent()}
+      <Title style={{paddingLeft: "12px"}}>Department of Safeguards Dashboard</Title>
+      <Flex justify="space-between">
+        <Menu onClick={handleMenuClick} selectedKeys={[currentTab]} mode="horizontal" items={tabItems} style={{ minWidth: 0, flex: "auto" }}/>
+        <Search placeholder="input search text" onSearch={onSearch} style={{ width: 200, marginRight: 30 }} />
+      </Flex>
+        <Layout style={mainContentStyle}>
+        {renderContent()}
+        </Layout>
       </ConfigProvider>
 
     
-      
-    </Layout>
+      </div>
   )
 }
 

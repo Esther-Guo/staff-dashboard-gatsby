@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../styles/FilterButton.css';
+import { Flex } from 'antd';
 
 const RAINBOW_COLORS = [
     "#F94144", "#F9844A", "#43AA8B", "#277DA1",
@@ -20,8 +21,47 @@ const FilterButton = ({ data, onFilterClick }) => {
 
     // Function to determine size based on count
     const getSizeForCount = (count) => {
-        return 100 + (count * 2); // Base size + size increment based on count
+        return 150 + (count * 10); // Base size + size increment based on count
     };
+
+    const PFP = () => {
+      return (
+        <>
+          <img
+              src={`https://majors.engin.umich.edu/wp-content/uploads/2019/08/ners-alum-kristine-madden.png`} 
+              style={{
+                  position: 'absolute',
+                  width: '30%', 
+                  height: '30%', 
+                  top: '20%',
+                  left: '25%',
+                  transform: 'translate(-50%, -50%)'
+              }}
+          />
+          <img
+              src={`https://majors.engin.umich.edu/wp-content/uploads/2019/08/ners-alum-xiaojin-shen.png`} 
+              style={{position: 'absolute',
+                  width: '20%', 
+                  height: '20%', 
+                  top: '15%',
+                  left: '60%',
+                  transform: 'translate(-50%, -50%)'
+              }}
+          />
+          <img
+              src={`https://majors.engin.umich.edu/wp-content/uploads/2019/09/ners-alum-joel-kulesza.png`} 
+              style={{
+                  position: 'absolute',
+                  width: '25%', 
+                  height: '25%', 
+                  top: '90%',
+                  left: '80%',
+                  transform: 'translate(-50%, -50%)'
+              }}
+          />
+        </>
+      )
+    }
   
     // Render filter items
     return (
@@ -31,15 +71,18 @@ const FilterButton = ({ data, onFilterClick }) => {
             <button
                 key={category}
                 style={{
-                backgroundColor: RAINBOW_COLORS[index % RAINBOW_COLORS.length],
-                // opacity: selectedFilter && selectedFilter !== category ? 0.5 : 1,
-                width: `${getSizeForCount(count)}px`,
-                height: `${getSizeForCount(count)}px`,
-                borderRadius: '50%', // Makes the button round
+                  backgroundColor: RAINBOW_COLORS[index % RAINBOW_COLORS.length],
+                  // opacity: selectedFilter && selectedFilter !== category ? 0.5 : 1,
+                  width: `${getSizeForCount(count)}px`,
+                  height: `${getSizeForCount(count)}px`,
+                  borderRadius: '50%', // Makes the button round
+                  fontSize: 18,
+                  position: 'relative'
                 }}
                 onClick={() => onFilterClick(category)}
             >
-                {category} ({count})
+              {index == 0 && <PFP />}
+                {category}
             </button>
           </div>
         ))}
