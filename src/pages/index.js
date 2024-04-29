@@ -1,7 +1,9 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useStaticQuery, graphql } from "gatsby"
+import * as JsSearch from 'js-search';
 import { ConfigProvider, Button, Flex, Menu, Avatar, Card, Collapse, Layout, Typography, Input} from 'antd';
 import FilterButton from "../components/FilterButton";
+import loadCSV from '../utils/loadCSV';
 
 const { Meta } = Card;
 
@@ -86,7 +88,7 @@ const StaffCard = ({ filterType, filterValue, data }) => {
           height: "100%",
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between', // Not sure why it has gap pn top&bottom
+          // justifyContent: 'space-between', // Not sure why it has gap pn top&bottom
           padding: '10px'
         }
       }}
@@ -113,16 +115,89 @@ const StaffCard = ({ filterType, filterValue, data }) => {
   )
 }
 
+const SearchResultCard = ({data}) => {
+  return (
+    <>
+      {data.map(staff => (
+        <Card
+        style={{
+          width: 300,
+        }}
+        styles={{
+          body: {
+            height: "100%",
+            display: 'flex',
+            flexDirection: 'column',
+            // justifyContent: 'space-between', // Not sure why it has gap pn top&bottom
+            padding: '10px'
+          }
+        }}
+        >
+
+          <Meta
+            avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />}
+            title={staff.Name}
+            description={staff["IAEA Profession"]}
+          />
+          <Collapse ghost items={[
+            {
+              key: '1',
+              label: 'More',
+              children: <><p>Nationality: {staff.Nationality}</p>
+              <p>Pre-IAEA Experience: {staff["Pre IAEA Work Experience"]}</p>
+              <p>Generational: {staff.Generational}</p></>,
+            }
+          ]} />
+
+        </Card>
+    ))}
+    </>
+  )
+}
+
 const IndexPage = () => {
 
   const [currentTab, setCurrentTab] = useState('IAEA_Profession');
   const [filterValue, setFilterValue] = useState("");
-  const onSearch = (value, _e, info) => console.log(info?.source, value);
+  const [search, setSearch] = useState();
+  const [searchVal, setSearchVal] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(() => {
+    async function setupSearch() {
+      const staff = await loadCSV('staff-info.csv');
+      const search = new JsSearch.Search('Staff ID');
+      
+      search.addIndex('Name');
+      search.addIndex('Nationality');
+      search.addIndex('IAEA Profession');
+      search.addIndex('Academic');
+      search.addIndex('Pre-IAEA Work Experience');
+      search.addIndex('Generational');
+
+      search.addDocuments(staff);
+      setSearch(search);
+    }
+
+    setupSearch();
+  }, []);
+
+  const handleSearch = (value, _e, info) => {
+    // console.log(info?.source, value);
+    if (search) {
+      const results = search.search(value);
+      setSearchResults(results);
+      setCurrentTab("");
+      setSearchVal(value);
+      
+    }
+  }
 
   const handleMenuClick = (e) => {
     // console.log('click ', e);
     setCurrentTab(e.key);
     setFilterValue("");
+    setSearchVal("");
   };
 
   const handleFilterClick = (value) => {
@@ -214,7 +289,19 @@ const IndexPage = () => {
             </Content>
             )
       default:
-        return <div>Something went wrong!</div>;
+        if (searchResults) {
+            return (
+              <Content>
+                <Title level={4}>Search result for: {searchVal}</Title>
+                <Flex wrap="wrap" gap="middle">
+                  <SearchResultCard data={searchResults} />
+                </Flex>
+                {/* <Button key="back" onClick={() => setFilterValue("")} style={{margin: "16px 0"}}>Back</Button> */}
+              </Content>
+            )
+          }
+        else
+            return <div>Something went wrong!</div>;
     }
   };
 
@@ -281,7 +368,7 @@ const IndexPage = () => {
       <Title style={{paddingLeft: "12px"}}>Department of Safeguards Dashboard</Title>
       <Flex justify="space-between">
         <Menu onClick={handleMenuClick} selectedKeys={[currentTab]} mode="horizontal" items={tabItems} style={{ minWidth: 0, flex: "auto" }}/>
-        <Search placeholder="input search text" onSearch={onSearch} style={{ width: 200, marginRight: 30 }} />
+        <Search placeholder="input search text" onSearch={handleSearch} style={{ width: 200, marginRight: 30 }} />
       </Flex>
         <Layout style={mainContentStyle}>
         {renderContent()}
@@ -295,4 +382,4 @@ const IndexPage = () => {
 
 export default IndexPage
 
-export const Head = () => <title>Home Page</title>
+export const Head = () => <title>Dashboard</title>

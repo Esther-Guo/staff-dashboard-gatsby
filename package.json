@@ -17,10 +17,13 @@
   "dependencies": {
     "antd": "^5.16.4",
     "autoprefixer": "^10.4.19",
+    "axios": "^1.6.8",
     "gatsby": "^5.13.3",
     "gatsby-plugin-postcss": "^6.13.1",
     "gatsby-source-filesystem": "^5.13.1",
     "gatsby-transformer-csv": "^5.13.1",
+    "js-search": "^2.0.1",
+    "papaparse": "^5.4.1",
     "postcss": "^8.4.38",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
