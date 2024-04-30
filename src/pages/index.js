@@ -144,7 +144,7 @@ const SearchResultCard = ({data}) => {
               key: '1',
               label: 'More',
               children: <><p>Nationality: {staff.Nationality}</p>
-              <p>Pre-IAEA Experience: {staff["Pre IAEA Work Experience"]}</p>
+              <p>Pre-IAEA Experience: {staff["Pre-IAEA Work Experience"]}</p>
               <p>Generational: {staff.Generational}</p></>,
             }
           ]} />
