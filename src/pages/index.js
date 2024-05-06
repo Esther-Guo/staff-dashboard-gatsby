@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react"
 import { useStaticQuery, graphql } from "gatsby"
 import * as JsSearch from 'js-search';
-import { ConfigProvider, Button, Flex, Menu, Avatar, Card, Collapse, Layout, Typography, Input} from 'antd';
+import { ConfigProvider, Avatar, Button, Flex, Menu, Card, Collapse, Layout, Typography, Input} from 'antd';
 import FilterButton from "../components/FilterButton";
 import loadCSV from '../utils/loadCSV';
 
 const { Meta } = Card;
 
 const { Header, Footer, Sider, Content } = Layout;
-const { Title } = Typography;
+const { Text, Title } = Typography;
 const { Search } = Input;
 
 const siderStyle = {
@@ -75,7 +75,6 @@ const FilterPanel = ({showFlag, data, onFilterClick}) => {
 
 const StaffCard = ({ filterType, filterValue, data }) => {
   const filtered = data.filter(item => !filterValue || item.node[filterType] === filterValue)
-
   return (
     <>
     {filtered.map(row => (
@@ -88,18 +87,20 @@ const StaffCard = ({ filterType, filterValue, data }) => {
           height: "100%",
           display: 'flex',
           flexDirection: 'column',
+          alignItems: 'center',
           // justifyContent: 'space-between', // Not sure why it has gap pn top&bottom
           padding: '10px'
         }
       }}
       >
+        <Avatar src={row.node.PFP} size={70} style={{marginBottom: "4px"}}/>
+        <Title level={4}>{row.node.Name}</Title>
+        <Text italic>{row.node.IAEA_Profession}</Text>
+        <Text>Nationality: {row.node.Nationality}</Text>
+        <Text>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience}</Text>
+        <Text>Generational: {row.node.Generational}</Text>
 
-        <Meta
-          avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />}
-          title={row.node.Name}
-          description={row.node.IAEA_Profession}
-        />
-        <Collapse ghost items={[
+        {/* <Collapse ghost items={[
           {
             key: '1',
             label: 'More',
@@ -107,7 +108,7 @@ const StaffCard = ({ filterType, filterValue, data }) => {
             <p>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience}</p>
             <p>Generational: {row.node.Generational}</p></>,
           }
-        ]} />
+        ]} /> */}
 
       </Card>
    ))}
@@ -128,13 +129,19 @@ const SearchResultCard = ({data}) => {
             height: "100%",
             display: 'flex',
             flexDirection: 'column',
+            alignItems: 'center',
             // justifyContent: 'space-between', // Not sure why it has gap pn top&bottom
             padding: '10px'
           }
         }}
         >
-
-          <Meta
+          <Avatar src={staff.PFP} size={70} style={{marginBottom: "4px"}}/>
+          <Title level={4}>{staff.Name}</Title>
+          <Text italic>{staff["IAEA Profession"]}</Text>
+          <Text>Nationality: {staff.Nationality}</Text>
+          <Text>Pre-IAEA Experience: {staff["Pre-IAEA Work Experience"]}</Text>
+          <Text>Generational: {staff.Generational}</Text>
+          {/* <Meta
             avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />}
             title={staff.Name}
             description={staff["IAEA Profession"]}
@@ -147,7 +154,7 @@ const SearchResultCard = ({data}) => {
               <p>Pre-IAEA Experience: {staff["Pre-IAEA Work Experience"]}</p>
               <p>Generational: {staff.Generational}</p></>,
             }
-          ]} />
+          ]} /> */}
 
         </Card>
     ))}
@@ -186,6 +193,7 @@ const IndexPage = () => {
     // console.log(info?.source, value);
     if (search) {
       const results = search.search(value);
+      // console.log(results)
       setSearchResults(results);
       setCurrentTab("");
       setSearchVal(value);
@@ -318,7 +326,8 @@ const IndexPage = () => {
             iso_alpha
             Academic
             Pre_IAEA_Work_Experience
-            Generational
+            Generational,
+            PFP
           }
         }
       }
