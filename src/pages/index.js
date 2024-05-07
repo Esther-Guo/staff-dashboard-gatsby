@@ -17,7 +17,7 @@ const siderStyle = {
   // textAlign: 'center',
   // lineHeight: '120px',
   // color: '#fff',
-  backgroundColor: '#599fe6',
+  backgroundColor: '#599fe6'
 };
 
 const mainContentStyle = {
