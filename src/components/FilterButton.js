@@ -28,7 +28,7 @@ const FilterButton = ({ data, onFilterClick }) => {
       return (
         <>
           <img
-              src={`https://majors.engin.umich.edu/wp-content/uploads/2019/08/ners-alum-kristine-madden.png`} 
+              src={"/pfp/woman_1.png"} 
               style={{
                   position: 'absolute',
                   width: '30%', 
@@ -39,7 +39,7 @@ const FilterButton = ({ data, onFilterClick }) => {
               }}
           />
           <img
-              src={`https://majors.engin.umich.edu/wp-content/uploads/2019/08/ners-alum-xiaojin-shen.png`} 
+              src={"/pfp/woman_2.png"} 
               style={{position: 'absolute',
                   width: '20%', 
                   height: '20%', 
@@ -49,7 +49,7 @@ const FilterButton = ({ data, onFilterClick }) => {
               }}
           />
           <img
-              src={`https://majors.engin.umich.edu/wp-content/uploads/2019/09/ners-alum-joel-kulesza.png`} 
+              src={"/pfp/man.png"} 
               style={{
                   position: 'absolute',
                   width: '25%', 
