@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { useStaticQuery, graphql } from "gatsby"
 import * as JsSearch from 'js-search';
-import { ConfigProvider, Avatar, Button, Flex, Menu, Card, Collapse, Layout, Typography, Input} from 'antd';
+import { ConfigProvider, Avatar, Button, Flex, Menu, Card, Collapse, Layout, Typography, Modal, Input} from 'antd';
 import FilterButton from "../components/FilterButton";
 import loadCSV from '../utils/loadCSV';
+import {VideoCameraTwoTone} from "@ant-design/icons"
+import ReactPlayer from 'react-player'
 
 const { Meta } = Card;
 
@@ -75,6 +77,17 @@ const FilterPanel = ({showFlag, data, onFilterClick}) => {
 
 const StaffCard = ({ filterType, filterValue, data }) => {
   const filtered = data.filter(item => !filterValue || item.node[filterType] === filterValue)
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
     {filtered.map(row => (
@@ -93,8 +106,24 @@ const StaffCard = ({ filterType, filterValue, data }) => {
         }
       }}
       >
+
+        <Modal 
+          open={isModalOpen} 
+          onCancel={handleCancel} 
+          footer={null} 
+          mask={false}
+          centered={true}
+          width={750}
+        >
+          {/* https://github.com/CookPete/react-player */}
+          <ReactPlayer 
+            url={row.node.Video}
+            controls={true}
+          />
+        </Modal>
+
         <Avatar src={row.node.PFP} size={70} style={{marginBottom: "4px"}}/>
-        <Title level={4}>{row.node.Name}</Title>
+        <Title level={4}>{row.node.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={showModal}/></Title>
         <Text italic>{row.node.IAEA_Profession}</Text>
         <Text>Nationality: {row.node.Nationality}</Text>
         <Text>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience}</Text>
@@ -117,6 +146,16 @@ const StaffCard = ({ filterType, filterValue, data }) => {
 }
 
 const SearchResultCard = ({data}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       {data.map(staff => (
@@ -135,8 +174,23 @@ const SearchResultCard = ({data}) => {
           }
         }}
         >
+          <Modal 
+            open={isModalOpen} 
+            onCancel={handleCancel} 
+            footer={null} 
+            mask={false}
+            centered={true}
+            width={750}
+          >
+            {/* https://github.com/CookPete/react-player */}
+            <ReactPlayer 
+              url={staff.Video}
+              controls={true}
+            />
+          </Modal>
+
           <Avatar src={staff.PFP} size={70} style={{marginBottom: "4px"}}/>
-          <Title level={4}>{staff.Name}</Title>
+          <Title level={4}>{staff.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={showModal}/></Title>
           <Text italic>{staff["IAEA Profession"]}</Text>
           <Text>Nationality: {staff.Nationality}</Text>
           <Text>Pre-IAEA Experience: {staff["Pre-IAEA Work Experience"]}</Text>
@@ -327,7 +381,8 @@ const IndexPage = () => {
             Academic
             Pre_IAEA_Work_Experience
             Generational,
-            PFP
+            PFP,
+            Video
           }
         }
       }
