@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useStaticQuery, graphql } from "gatsby"
 import * as JsSearch from 'js-search';
-import { ConfigProvider, Avatar, Button, Flex, Menu, Card, Collapse, Layout, Typography, Modal, Input} from 'antd';
+import { ConfigProvider, Avatar, Button, Flex, Menu, Card, Collapse, Layout, Space, Typography, Modal, Input} from 'antd';
 import FilterButton from "../components/FilterButton";
 import loadCSV from '../utils/loadCSV';
 import {VideoCameraTwoTone} from "@ant-design/icons"
@@ -48,7 +48,7 @@ const tabItems = [
   },
 ];
 
-const FilterPanel = ({showFlag, data, onFilterClick}) => {
+const FilterPanel = ({showFlag, data, filterValue, onFilterClick}) => {
   if (showFlag) 
     return (
       <>
@@ -60,7 +60,8 @@ const FilterPanel = ({showFlag, data, onFilterClick}) => {
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               width: '80px',
-              height: '50px'
+              height: '50px',
+              border: filterValue === item ? '3px solid #E76F00' : '',
             }}></Button>
         ))}
       </>
@@ -69,7 +70,10 @@ const FilterPanel = ({showFlag, data, onFilterClick}) => {
     return (
       <>
         {data.map(item => (
-          <Button key={item} onClick={() => onFilterClick(item)}>{item}</Button>
+
+          <Button key={item} type={filterValue === item ? 'primary' : 'default'} onClick={() => onFilterClick(item)}
+            
+          >{item}</Button>
         ))}
       </>
       )
@@ -272,6 +276,8 @@ const IndexPage = () => {
         if (filterValue) 
           return (
               <Content>
+                <Text>CATEGORY</Text>
+                <Text style={{display: "block", fontSize: 20, fontWeight: "bold", marginBottom: "20px", marginLeft: "30px"}}>{filterValue}</Text>
               <Flex wrap="wrap" gap="middle">
                 <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
               </Flex>
@@ -293,7 +299,7 @@ const IndexPage = () => {
           <Flex gap="large">
             <Sider width="180" style={siderStyle}>
               <Flex gap="middle" wrap="wrap">
-                <FilterPanel showFlag={true} data={uniqueNations} onFilterClick={handleFilterClick} />
+                <FilterPanel showFlag={true} data={uniqueNations} filterValue={filterValue} onFilterClick={handleFilterClick} />
               </Flex>
             </Sider>
             <Content>
@@ -309,7 +315,7 @@ const IndexPage = () => {
           <Flex gap="large">
             <Sider width="250" style={siderStyle}>
               <Flex vertical gap="middle">
-                <FilterPanel data={uniqueAcademic} onFilterClick={handleFilterClick} />
+                <FilterPanel data={uniqueAcademic} filterValue={filterValue} onFilterClick={handleFilterClick} />
               </Flex>
             </Sider>
             <Content>
@@ -324,7 +330,7 @@ const IndexPage = () => {
           <Flex gap="large">
             <Sider width="200" style={siderStyle}>
               <Flex vertical gap="middle">
-                <FilterPanel data={uniqueWorkExperience} onFilterClick={handleFilterClick} />
+                <FilterPanel data={uniqueWorkExperience} filterValue={filterValue} onFilterClick={handleFilterClick} />
               </Flex>
             </Sider>
             <Content>
@@ -338,6 +344,8 @@ const IndexPage = () => {
         if (filterValue) 
           return (
             <Content>
+               <Text>CATEGORY</Text>
+                <Text style={{display: "block", fontSize: 20, fontWeight: "bold", marginBottom: "20px", marginLeft: "30px"}}>{filterValue}</Text>
               <Flex wrap="wrap" gap="middle">
                 <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
               </Flex>
@@ -420,7 +428,7 @@ const IndexPage = () => {
             horizontalItemHoverColor: '#ffffff',
             horizontalItemSelectedColor: '#ffffff', 
             itemHoverColor: '#ffffff',
-            itemBg: '#599fe6'
+            itemBg: '#599fe6',
           },
           Collapse: {
             headerPadding: "16px 0 0 0",
@@ -431,8 +439,8 @@ const IndexPage = () => {
     >
       <Title style={{paddingLeft: "12px"}}>Department of Safeguards Dashboard</Title>
       <Flex justify="space-between">
-        <Menu onClick={handleMenuClick} selectedKeys={[currentTab]} mode="horizontal" items={tabItems} style={{ minWidth: 0, flex: "auto" }}/>
-        <Search placeholder="input search text" onSearch={handleSearch} style={{ width: 200, marginRight: 30 }} />
+        <Menu onClick={handleMenuClick} selectedKeys={[currentTab]} mode="horizontal" items={tabItems} style={{ minWidth: 0, flex: "auto", fontWeight: "bold", fontSize: 18 }}/> 
+        <Search placeholder="" onSearch={handleSearch} style={{ width: 200, marginRight: 30 }} />
       </Flex>
         <Layout style={mainContentStyle}>
         {renderContent()}
