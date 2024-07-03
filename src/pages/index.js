@@ -16,8 +16,7 @@ const { Search } = Input;
 const siderStyle = {
   // textAlign: 'center',
   // lineHeight: '120px',
-  // color: '#fff',
-  backgroundColor: '#599fe6'
+  backgroundColor: '#0069B4'
 };
 
 const mainContentStyle = {
@@ -70,10 +69,22 @@ const FilterPanel = ({showFlag, data, filterValue, onFilterClick}) => {
     return (
       <>
         {data.map(item => (
-
+          <ConfigProvider
+            theme={{
+              token: {
+                // Seed Token，影响范围大
+                colorPrimary: '#104C98',
+                borderRadius: 4,
+                colorText: '#333233',
+                // 派生变量，影响范围小
+                colorBgContainer: '#EEF1F7',
+              },
+            }}
+          >
           <Button key={item} type={filterValue === item ? 'primary' : 'default'} onClick={() => onFilterClick(item)}
             
           >{item}</Button>
+          </ConfigProvider>
         ))}
       </>
       )
@@ -95,9 +106,19 @@ const StaffCard = ({ filterType, filterValue, data }) => {
   return (
     <>
     {filtered.map(row => (
-      <Card
+      <ConfigProvider
+        theme={{
+          token: {
+            colorText: '#333233',
+            boxShadow: 'none',
+          },
+        }}
+      > 
+      <Card  
+      
       style={{
         width: 300,
+        
       }}
       styles={{
         body: {
@@ -106,11 +127,11 @@ const StaffCard = ({ filterType, filterValue, data }) => {
           flexDirection: 'column',
           alignItems: 'center',
           // justifyContent: 'space-between', // Not sure why it has gap pn top&bottom
-          padding: '10px'
+          padding: '10px',
         }
       }}
       >
-
+ 
         <Modal 
           open={isModalOpen} 
           onCancel={handleCancel} 
@@ -142,8 +163,8 @@ const StaffCard = ({ filterType, filterValue, data }) => {
             <p>Generational: {row.node.Generational}</p></>,
           }
         ]} /> */}
-
       </Card>
+</ConfigProvider>  
    ))}
    </>
   )
@@ -163,6 +184,14 @@ const SearchResultCard = ({data}) => {
   return (
     <>
       {data.map(staff => (
+        <ConfigProvider
+          theme={{
+            token: {
+              colorText: '#333233',
+              boxShadow: 'none',
+            },
+          }}
+        >  
         <Card
         style={{
           width: 300,
@@ -178,6 +207,7 @@ const SearchResultCard = ({data}) => {
           }
         }}
         >
+          
           <Modal 
             open={isModalOpen} 
             onCancel={handleCancel} 
@@ -213,8 +243,8 @@ const SearchResultCard = ({data}) => {
               <p>Generational: {staff.Generational}</p></>,
             }
           ]} /> */}
-
-        </Card>
+          </Card>
+        </ConfigProvider>
     ))}
     </>
   )
@@ -281,7 +311,7 @@ const IndexPage = () => {
               <Flex wrap="wrap" gap="middle">
                 <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
               </Flex>
-              <Button key="back" onClick={() => setFilterValue("")} style={{margin: "16px 0"}}>Back</Button>
+              <Button key="back" onClick={() => setFilterValue("")} style={{margin: "16px 0", color: "#333233"}}>Back</Button>
             </Content>
 
           )
@@ -349,7 +379,7 @@ const IndexPage = () => {
               <Flex wrap="wrap" gap="middle">
                 <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
               </Flex>
-              <Button key="back" onClick={() => setFilterValue("")} style={{margin: "16px 0"}}>Back</Button>
+              <Button key="back" onClick={() => setFilterValue("")} style={{margin: "16px 0", color: "#333233"}}>Back</Button>
             </Content>
           )
         else
@@ -373,6 +403,25 @@ const IndexPage = () => {
         else
             return <div>Something went wrong!</div>;
     }
+  };
+
+  // Extract as component for setting the theme
+  const SearchBar = () => {
+    return (
+      <div>
+        <ConfigProvider
+          theme={{
+            token: {
+              fontSize: 16,
+              colorText: '#333233',
+              
+            },
+          }}
+        >
+          <Search placeholder="" onSearch={handleSearch} style={{ width: 200, marginRight: 30 }} />
+        </ConfigProvider>
+      </div>
+    );
   };
 
   const data = useStaticQuery(graphql`
@@ -418,17 +467,23 @@ const IndexPage = () => {
       <ConfigProvider
       theme={{
         token: {
-          fontSize: 16
+          fontSize: 16,
+          colorText: '#ffffff',
+          fontFamily: 'Roboto',
+          // colorPrimary: '#333233'
+          // colorBgContainer: '#0069B4'
         },
         components: {
           Layout: {
-            bodyBg: '#599fe6',
+            bodyBg: '#0069B4',
           },
           Menu: {
-            horizontalItemHoverColor: '#ffffff',
+            // horizontalItemHoverColor: '#ffffff',
             horizontalItemSelectedColor: '#ffffff', 
-            itemHoverColor: '#ffffff',
-            itemBg: '#599fe6',
+            // itemHoverColor: '#ffffff',
+            itemBg: '#0069B4',
+            popupBg: '#0069B4',
+            // cardBg: '#0069B4',
           },
           Collapse: {
             headerPadding: "16px 0 0 0",
@@ -438,10 +493,10 @@ const IndexPage = () => {
       }}
     >
       <Title style={{paddingLeft: "12px"}}>Department of Safeguards Dashboard</Title>
-      <Flex justify="space-between">
-        <Menu onClick={handleMenuClick} selectedKeys={[currentTab]} mode="horizontal" items={tabItems} style={{ minWidth: 0, flex: "auto", fontWeight: "bold", fontSize: 18 }}/> 
-        <Search placeholder="" onSearch={handleSearch} style={{ width: 200, marginRight: 30 }} />
-      </Flex>
+        <Flex justify="space-between">
+          <Menu onClick={handleMenuClick} selectedKeys={[currentTab]} mode="horizontal" items={tabItems} style={{ minWidth: 0, flex: "auto", fontWeight: "bold", fontSize: 18 }}/> 
+          <SearchBar />
+        </Flex>
         <Layout style={mainContentStyle}>
         {renderContent()}
         </Layout>
