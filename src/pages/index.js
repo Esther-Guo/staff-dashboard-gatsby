@@ -6,6 +6,7 @@ import FilterButton from "../components/FilterButton";
 import loadCSV from '../utils/loadCSV';
 import {VideoCameraTwoTone} from "@ant-design/icons"
 import ReactPlayer from 'react-player'
+import { motion, AnimatePresence } from "framer-motion";
 
 const { Meta } = Card;
 
@@ -105,7 +106,7 @@ const StaffCard = ({ filterType, filterValue, data }) => {
 
   return (
     <>
-    {filtered.map(row => (
+    {filtered.map((row, idx) => (
       <ConfigProvider
         theme={{
           token: {
@@ -114,6 +115,12 @@ const StaffCard = ({ filterType, filterValue, data }) => {
           },
         }}
       > 
+      <AnimatePresence mode="wait">
+    <motion.div key={filterValue+idx}
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            // exit={{ y: -10, opacity: 0 }}
+            transition={{ duration: 0.2 }}>
       <Card  
       
       style={{
@@ -164,9 +171,11 @@ const StaffCard = ({ filterType, filterValue, data }) => {
           }
         ]} /> */}
       </Card>
+   </motion.div>
+   </AnimatePresence>
 </ConfigProvider>  
    ))}
-   </>
+  </>
   )
 }
 

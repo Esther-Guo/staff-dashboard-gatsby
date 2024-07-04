@@ -10,14 +10,20 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: bold;
     border: none;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 
+                0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease-in-out;
+    
 }
 
 .bubble-container button:hover {
-    transform: scale(1.1); /* Slightly enlarge on hover */
+    transform: scale(1.1);  /* Slightly enlarge on hover */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2), 
+                0 4px 6px rgba(0, 0, 0, 0.15);
 }
   
 

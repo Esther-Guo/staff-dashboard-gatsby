@@ -1,12 +1,33 @@
 import React from 'react';
 import '../styles/FilterButton.css';
 import { Flex } from 'antd';
+import { motion } from "framer-motion"
 
 const RAINBOW_COLORS = [
-    "#F94144", "#F9844A", "#43AA8B", "#277DA1",
-    "#F9C74F", "#90BE6D", "#4D908E", "#F8961E",
-    "#F3722C", "#577590"
+    "#C7C4E2", "#FFCB66", "#BEDC8F", "#99CCFF",
+    "#F4A7B9", "#FFE082", "#A3E4D7", "#D3B8AE",
+    "#B5A3C9", "#E0BBE4", "#FFABAB", "#FAD1D1", "#B2DFDB"
   ];
+
+  const container = {
+    hidden: { opacity: 1, scale: 0 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.3
+      }
+    }
+  };
+  
+  const item = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1
+    }
+  };
 
 const FilterButton = ({ data, onFilterClick }) => {
 
@@ -65,13 +86,15 @@ const FilterButton = ({ data, onFilterClick }) => {
   
     // Render filter items
     return (
-      <div className="bubble-container">
+      <motion.ul className="bubble-container container" variants={container}
+      initial="hidden"
+      animate="visible">
         {Object.entries(categoryCounts).map(([category, count], index) => (
-          <div>
+          <motion.li key={index} className="item" variants={item}>
             <button
                 key={category}
                 style={{
-                  backgroundColor: RAINBOW_COLORS[index % RAINBOW_COLORS.length],
+                  background: `radial-gradient(circle, ${RAINBOW_COLORS[index % RAINBOW_COLORS.length]} 60%, rgba(255,255,255,1) 100%)`,
                   // opacity: selectedFilter && selectedFilter !== category ? 0.5 : 1,
                   width: `${getSizeForCount(count)}px`,
                   height: `${getSizeForCount(count)}px`,
@@ -84,9 +107,9 @@ const FilterButton = ({ data, onFilterClick }) => {
               {index == 0 && <PFP />}
                 {category}
             </button>
-          </div>
+          </motion.li>
         ))}
-      </div>
+      </motion.ul>
     );
   };
 
