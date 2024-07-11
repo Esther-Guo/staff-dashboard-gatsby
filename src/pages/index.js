@@ -27,8 +27,8 @@ const mainContentStyle = {
 
 const tabItems = [
   {
-    label: 'IAEA Profession',
-    key: 'IAEA_Profession',
+    label: 'Current Position',
+    key: 'Current_Position',
   },
   {
     label: 'Nationality',
@@ -43,8 +43,8 @@ const tabItems = [
     key: 'Pre_IAEA_Work_Experience',
   },
   {
-    label: 'Generational',
-    key: 'Generational',
+    label: 'Age Bracket',
+    key: 'Age_Bracket',
   },
 ];
 
@@ -73,11 +73,9 @@ const FilterPanel = ({showFlag, data, filterValue, onFilterClick}) => {
           <ConfigProvider
             theme={{
               token: {
-                // Seed Token，影响范围大
                 colorPrimary: '#104C98',
                 borderRadius: 4,
                 colorText: '#333233',
-                // 派生变量，影响范围小
                 colorBgContainer: '#EEF1F7',
               },
             }}
@@ -156,10 +154,10 @@ const StaffCard = ({ filterType, filterValue, data }) => {
 
         <Avatar src={row.node.PFP} size={70} style={{marginBottom: "4px"}}/>
         <Title level={4}>{row.node.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={showModal}/></Title>
-        <Text italic>{row.node.IAEA_Profession}</Text>
+        <Text italic>{row.node.Current_Position}</Text>
         <Text>Nationality: {row.node.Nationality}</Text>
         <Text>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience}</Text>
-        <Text>Generational: {row.node.Generational}</Text>
+        <Text>Age Bracket: {row.node.Age_Bracket}</Text>
 
         {/* <Collapse ghost items={[
           {
@@ -167,7 +165,7 @@ const StaffCard = ({ filterType, filterValue, data }) => {
             label: 'More',
             children: <><p>Nationality: {row.node.Nationality}</p>
             <p>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience}</p>
-            <p>Generational: {row.node.Generational}</p></>,
+            <p>Age Bracket: {row.node.Age_Bracket}</p></>,
           }
         ]} /> */}
       </Card>
@@ -234,14 +232,14 @@ const SearchResultCard = ({data}) => {
 
           <Avatar src={staff.PFP} size={70} style={{marginBottom: "4px"}}/>
           <Title level={4}>{staff.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={showModal}/></Title>
-          <Text italic>{staff["IAEA Profession"]}</Text>
+          <Text italic>{staff["Current Position"]}</Text>
           <Text>Nationality: {staff.Nationality}</Text>
           <Text>Pre-IAEA Experience: {staff["Pre-IAEA Work Experience"]}</Text>
-          <Text>Generational: {staff.Generational}</Text>
+          <Text>Age Bracket: {staff["Age Bracket"]}</Text>
           {/* <Meta
             avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />}
             title={staff.Name}
-            description={staff["IAEA Profession"]}
+            description={staff["Current Position"]}
           />
           <Collapse ghost items={[
             {
@@ -249,7 +247,7 @@ const SearchResultCard = ({data}) => {
               label: 'More',
               children: <><p>Nationality: {staff.Nationality}</p>
               <p>Pre-IAEA Experience: {staff["Pre-IAEA Work Experience"]}</p>
-              <p>Generational: {staff.Generational}</p></>,
+              <p>Age Bracket: {staff.Age_Bracket}</p></>,
             }
           ]} /> */}
           </Card>
@@ -261,7 +259,7 @@ const SearchResultCard = ({data}) => {
 
 const IndexPage = () => {
 
-  const [currentTab, setCurrentTab] = useState('IAEA_Profession');
+  const [currentTab, setCurrentTab] = useState('Current_Position');
   const [filterValue, setFilterValue] = useState("");
   const [search, setSearch] = useState();
   const [searchVal, setSearchVal] = useState("");
@@ -269,15 +267,15 @@ const IndexPage = () => {
 
   useEffect(() => {
     async function setupSearch() {
-      const staff = await loadCSV('staff-info.csv');
+      const staff = await loadCSV('staff-info-new.csv');
       const search = new JsSearch.Search('Staff ID');
       
       search.addIndex('Name');
       search.addIndex('Nationality');
-      search.addIndex('IAEA Profession');
+      search.addIndex('Current Position');
       search.addIndex('Academic');
       search.addIndex('Pre-IAEA Work Experience');
-      search.addIndex('Generational');
+      search.addIndex('Age Bracket');
 
       search.addDocuments(staff);
       setSearch(search);
@@ -311,7 +309,7 @@ const IndexPage = () => {
 
   const renderContent = () => {
     switch (currentTab) {
-      case 'IAEA_Profession':
+      case 'Current_Position':
         if (filterValue) 
           return (
               <Content>
@@ -379,7 +377,7 @@ const IndexPage = () => {
             </Content>
           </Flex>
         )
-      case 'Generational':
+      case 'Age_Bracket':
         if (filterValue) 
           return (
             <Content>
@@ -435,29 +433,29 @@ const IndexPage = () => {
 
   const data = useStaticQuery(graphql`
     query {
-      allStaffInfoCsv {
+      allStaffInfoNewCsv {
         edges {
           node {
             Staff_ID
             Name
-            Gender
-            IAEA_Profession
+            Pronouns
+            Current_Position
             Nationality
             iso_alpha
             Academic
             Pre_IAEA_Work_Experience
-            Generational,
-            PFP,
+            Age_Bracket
+            PFP
             Video
           }
         }
       }
     }
-  `).allStaffInfoCsv.edges;
+  `).allStaffInfoNewCsv.edges;
 
-  const professions = data.map(row => row.node.IAEA_Profession);
+  const professions = data.map(row => row.node.Current_Position);
 
-  const generations = data.map(row => row.node.Generational);
+  const generations = data.map(row => row.node.Age_Bracket);
 
   const nationalities = data.map(row => row.node.Nationality);
   const uniqueNationalities = Array.from(new Set(nationalities));
@@ -468,7 +466,7 @@ const IndexPage = () => {
   const academic = data.map(row => row.node.Academic);
   const uniqueAcademic = Array.from(new Set(academic));
 
-  const workExperience = data.map(row => row.node.Pre_IAEA_Work_Experience);
+  const workExperience = data.map(row => row.node.Pre__Work_Experience);
   const uniqueWorkExperience = Array.from(new Set(workExperience));
 
   return (
