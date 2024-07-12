@@ -28,7 +28,7 @@ const mainContentStyle = {
 const tabItems = [
   {
     label: 'Current Position',
-    key: 'Current_Position',
+    key: 'Current_Position_Category',
   },
   {
     label: 'Nationality',
@@ -36,11 +36,11 @@ const tabItems = [
   },
   {
     label: 'Academic',
-    key: 'Academic',
+    key: 'Degree',
   },
   {
     label: 'Pre-IAEA Work Experience',
-    key: 'Pre_IAEA_Work_Experience',
+    key: 'Pre_IAEA_Work_Experience_Category',
   },
   {
     label: 'Age Bracket',
@@ -156,6 +156,7 @@ const StaffCard = ({ filterType, filterValue, data }) => {
         <Title level={4}>{row.node.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={showModal}/></Title>
         <Text italic>{row.node.Current_Position}</Text>
         <Text>Nationality: {row.node.Nationality}</Text>
+        <Text>Academic: {row.node.Academic}</Text>
         <Text>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience}</Text>
         <Text>Age Bracket: {row.node.Age_Bracket}</Text>
 
@@ -234,6 +235,7 @@ const SearchResultCard = ({data}) => {
           <Title level={4}>{staff.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={showModal}/></Title>
           <Text italic>{staff["Current Position"]}</Text>
           <Text>Nationality: {staff.Nationality}</Text>
+          <Text>Academic: {staff.Academic}</Text>
           <Text>Pre-IAEA Experience: {staff["Pre-IAEA Work Experience"]}</Text>
           <Text>Age Bracket: {staff["Age Bracket"]}</Text>
           {/* <Meta
@@ -259,7 +261,7 @@ const SearchResultCard = ({data}) => {
 
 const IndexPage = () => {
 
-  const [currentTab, setCurrentTab] = useState('Current_Position');
+  const [currentTab, setCurrentTab] = useState('Current_Position_Category');
   const [filterValue, setFilterValue] = useState("");
   const [search, setSearch] = useState();
   const [searchVal, setSearchVal] = useState("");
@@ -309,11 +311,11 @@ const IndexPage = () => {
 
   const renderContent = () => {
     switch (currentTab) {
-      case 'Current_Position':
+      case 'Current_Position_Category':
         if (filterValue) 
           return (
               <Content>
-                <Text>CATEGORY</Text>
+                {/* <Text>CATEGORY</Text> */}
                 <Text style={{display: "block", fontSize: 20, fontWeight: "bold", marginBottom: "20px", marginLeft: "30px"}}>{filterValue}</Text>
               <Flex wrap="wrap" gap="middle">
                 <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
@@ -347,7 +349,7 @@ const IndexPage = () => {
           </Flex>
         )
 
-      case 'Academic':
+      case 'Degree':
         return (
           <Flex gap="large">
             <Sider width="250" style={siderStyle}>
@@ -362,7 +364,7 @@ const IndexPage = () => {
             </Content>
           </Flex>
         )
-      case 'Pre_IAEA_Work_Experience':
+      case 'Pre_IAEA_Work_Experience_Category':
         return (
           <Flex gap="large">
             <Sider width="200" style={siderStyle}>
@@ -381,7 +383,7 @@ const IndexPage = () => {
         if (filterValue) 
           return (
             <Content>
-               <Text>CATEGORY</Text>
+               {/* <Text>CATEGORY</Text> */}
                 <Text style={{display: "block", fontSize: 20, fontWeight: "bold", marginBottom: "20px", marginLeft: "30px"}}>{filterValue}</Text>
               <Flex wrap="wrap" gap="middle">
                 <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
@@ -439,10 +441,13 @@ const IndexPage = () => {
             Staff_ID
             Name
             Pronouns
+            Current_Position_Category
             Current_Position
             Nationality
             iso_alpha
+            Degree
             Academic
+            Pre_IAEA_Work_Experience_Category
             Pre_IAEA_Work_Experience
             Age_Bracket
             PFP
@@ -453,7 +458,7 @@ const IndexPage = () => {
     }
   `).allStaffInfoNewCsv.edges;
 
-  const professions = data.map(row => row.node.Current_Position);
+  const professions = data.map(row => row.node.Current_Position_Category);
 
   const generations = data.map(row => row.node.Age_Bracket);
 
@@ -463,10 +468,10 @@ const IndexPage = () => {
   const nations = data.map(row => row.node.iso_alpha);
   const uniqueNations = Array.from(new Set(nations));
 
-  const academic = data.map(row => row.node.Academic);
+  const academic = data.map(row => row.node.Degree);
   const uniqueAcademic = Array.from(new Set(academic));
 
-  const workExperience = data.map(row => row.node.Pre__Work_Experience);
+  const workExperience = data.map(row => row.node.Pre_IAEA_Work_Experience_Category);
   const uniqueWorkExperience = Array.from(new Set(workExperience));
 
   return (
