@@ -4,7 +4,7 @@ import * as JsSearch from 'js-search';
 import { ConfigProvider, Avatar, Button, Flex, Menu, Card, Collapse, Layout, Space, Typography, Modal, Input} from 'antd';
 import FilterButton from "../components/FilterButton";
 import loadCSV from '../utils/loadCSV';
-import {VideoCameraTwoTone} from "@ant-design/icons"
+import {VideoCameraTwoTone, LinkedinOutlined} from "@ant-design/icons"
 import ReactPlayer from 'react-player'
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -92,14 +92,10 @@ const FilterPanel = ({showFlag, data, filterValue, onFilterClick}) => {
 const StaffCard = ({ filterType, filterValue, data }) => {
   const filtered = data.filter(item => !filterValue || item.node[filterType] === filterValue)
   
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(new Array(filtered.length).fill(false));
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const toggleModal = (idx) => {
+    setIsModalOpen(prev => prev.map((item, i) => i === idx ? !item : item));
   };
 
   return (
@@ -138,13 +134,33 @@ const StaffCard = ({ filterType, filterValue, data }) => {
       >
  
         <Modal 
-          open={isModalOpen} 
-          onCancel={handleCancel} 
+          open={isModalOpen[idx]} 
+          onCancel={() => toggleModal(idx)}
           footer={null} 
-          mask={false}
+          mask={true}
           centered={true}
           width={750}
         >
+          <Flex vertical>
+              <Text strong>
+                Academic
+              </Text>
+              <Text>
+                {row.node.Academic}
+              </Text>
+              <Text strong>
+                Current Role Summary
+              </Text>
+              <Text>
+                {row.node.Current_Role_Summary}
+              </Text>
+              <Text strong>
+                Pre-IAEA Work Experience
+              </Text>
+              <Text>
+                {row.node.Pre_IAEA_Work_Experience}
+              </Text>
+            </Flex>
           {/* https://github.com/CookPete/react-player */}
           <ReactPlayer 
             url={row.node.Video}
@@ -153,13 +169,18 @@ const StaffCard = ({ filterType, filterValue, data }) => {
         </Modal>
 
         <Avatar src={row.node.PFP} size={70} style={{marginBottom: "4px"}}/>
-        <Title level={4}>{row.node.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={showModal}/></Title>
-        <Text italic>{row.node.Current_Position}</Text>
-        <Text>Nationality: {row.node.Nationality}</Text>
-        <Text>Academic: {row.node.Academic}</Text>
-        <Text>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience}</Text>
-        <Text>Age Bracket: {row.node.Age_Bracket}</Text>
-
+        <Title level={4}>{row.node.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={() => toggleModal(idx)}/></Title>
+        <Text>{row.node.Pronouns}</Text>
+        <Text italic style={{marginBottom: '4px', textAlign: 'center'}}>
+          {row.node.Current_Position}
+          {row.node.LinkedIN_Profile && <LinkedinOutlined style={{fontSize: '16px', color: '#0069B4', marginLeft: '4px'}} onClick={() => window.open(`${row.node.LinkedIN_Profile}`)}/>}
+        </Text>
+        <Flex vertical>
+          <Text>Nationality: {row.node.Nationality}</Text>
+          <Text>Academic: {row.node.Degree}</Text>
+          <Text>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience_Category}</Text>
+          <Text>Age Bracket: {row.node.Age_Bracket}</Text>
+        </Flex>
         {/* <Collapse ghost items={[
           {
             key: '1',
@@ -179,19 +200,16 @@ const StaffCard = ({ filterType, filterValue, data }) => {
 }
 
 const SearchResultCard = ({data}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
+  const [isModalOpen, setIsModalOpen] = useState(new Array(data.length).fill(false));
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const toggleModal = (idx) => {
+    setIsModalOpen(prev => prev.map((item, i) => i === idx ? !item : item));
   };
 
   return (
     <>
-      {data.map(staff => (
+      {data.map((staff,idx) => (
         <ConfigProvider
           theme={{
             token: {
@@ -201,6 +219,7 @@ const SearchResultCard = ({data}) => {
           }}
         >  
         <Card
+        
         style={{
           width: 300,
         }}
@@ -211,19 +230,40 @@ const SearchResultCard = ({data}) => {
             flexDirection: 'column',
             alignItems: 'center',
             // justifyContent: 'space-between', // Not sure why it has gap pn top&bottom
-            padding: '10px'
+            padding: '10px',
+            
           }
         }}
         >
           
           <Modal 
-            open={isModalOpen} 
-            onCancel={handleCancel} 
+            open={isModalOpen[idx]} 
+            onCancel={() => toggleModal(idx)} 
             footer={null} 
-            mask={false}
+            mask={true}
             centered={true}
             width={750}
           >
+            <Flex vertical>
+              <Text strong>
+                Academic
+              </Text>
+              <Text>
+                {staff.Academic}
+              </Text>
+              <Text strong>
+                Current Role Summary
+              </Text>
+              <Text>
+                {staff["Current Role Summary"]}
+              </Text>
+              <Text strong>
+                Pre-IAEA Work Experience
+              </Text>
+              <Text>
+                {staff["Pre-IAEA Work Experience"]}
+              </Text>
+            </Flex>
             {/* https://github.com/CookPete/react-player */}
             <ReactPlayer 
               url={staff.Video}
@@ -232,12 +272,18 @@ const SearchResultCard = ({data}) => {
           </Modal>
 
           <Avatar src={staff.PFP} size={70} style={{marginBottom: "4px"}}/>
-          <Title level={4}>{staff.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={showModal}/></Title>
-          <Text italic>{staff["Current Position"]}</Text>
-          <Text>Nationality: {staff.Nationality}</Text>
-          <Text>Academic: {staff.Academic}</Text>
-          <Text>Pre-IAEA Experience: {staff["Pre-IAEA Work Experience"]}</Text>
-          <Text>Age Bracket: {staff["Age Bracket"]}</Text>
+          <Title level={4}>{staff.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={() => toggleModal(idx)}/></Title>
+          <Text>{staff.Pronouns}</Text>
+          <Text italic style={{marginBottom: '4px', textAlign: 'center'}}>
+            {staff["Current Position"]}
+            {staff["LinkedIN Profile"] && <LinkedinOutlined style={{fontSize: '16px', color: '#0069B4', marginLeft: '4px'}} onClick={() => window.open(staff["LinkedIN Profile"])}/>}
+          </Text>
+          <Flex vertical>
+            <Text>Nationality: {staff.Nationality}</Text>
+            <Text>Academic: {staff.Degree}</Text>
+            <Text>Pre-IAEA Experience: {staff["Pre-IAEA Work Experience Category"]}</Text>
+            <Text>Age Bracket: {staff["Age Bracket"]}</Text>
+          </Flex>
           {/* <Meta
             avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />}
             title={staff.Name}
@@ -441,8 +487,10 @@ const IndexPage = () => {
             Staff_ID
             Name
             Pronouns
+            LinkedIN_Profile
             Current_Position_Category
             Current_Position
+            Current_Role_Summary
             Nationality
             iso_alpha
             Degree
