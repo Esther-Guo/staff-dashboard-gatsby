@@ -17,7 +17,7 @@ const { Search } = Input;
 const siderStyle = {
   // textAlign: 'center',
   // lineHeight: '120px',
-  backgroundColor: '#0069B4'
+  backgroundColor: '#0A4C98'
 };
 
 const mainContentStyle = {
@@ -73,7 +73,7 @@ const FilterPanel = ({showFlag, data, filterValue, onFilterClick}) => {
           <ConfigProvider
             theme={{
               token: {
-                colorPrimary: '#104C98',
+                colorPrimary: '#0069B4',
                 borderRadius: 4,
                 colorText: '#333233',
                 colorBgContainer: '#EEF1F7',
@@ -173,7 +173,7 @@ const StaffCard = ({ filterType, filterValue, data }) => {
         <Text>{row.node.Pronouns}</Text>
         <Text italic style={{marginBottom: '4px', textAlign: 'center'}}>
           {row.node.Current_Position}
-          {row.node.LinkedIN_Profile && <LinkedinOutlined style={{fontSize: '16px', color: '#0069B4', marginLeft: '4px'}} onClick={() => window.open(`${row.node.LinkedIN_Profile}`)}/>}
+          {row.node.LinkedIN_Profile && <LinkedinOutlined style={{fontSize: '16px', color: '#0A4C98', marginLeft: '4px'}} onClick={() => window.open(`${row.node.LinkedIN_Profile}`)}/>}
         </Text>
         <Flex vertical>
           <Text>Nationality: {row.node.Nationality}</Text>
@@ -276,7 +276,7 @@ const SearchResultCard = ({data}) => {
           <Text>{staff.Pronouns}</Text>
           <Text italic style={{marginBottom: '4px', textAlign: 'center'}}>
             {staff["Current Position"]}
-            {staff["LinkedIN Profile"] && <LinkedinOutlined style={{fontSize: '16px', color: '#0069B4', marginLeft: '4px'}} onClick={() => window.open(staff["LinkedIN Profile"])}/>}
+            {staff["LinkedIN Profile"] && <LinkedinOutlined style={{fontSize: '16px', color: '#0A4C98', marginLeft: '4px'}} onClick={() => window.open(staff["LinkedIN Profile"])}/>}
           </Text>
           <Flex vertical>
             <Text>Nationality: {staff.Nationality}</Text>
@@ -347,7 +347,16 @@ const IndexPage = () => {
   const handleMenuClick = (e) => {
     // console.log('click ', e);
     setCurrentTab(e.key);
-    setFilterValue("");
+    switch (e.key) {
+      case 'Nationality':
+        return setFilterValue(uniqueNations[0]);
+      case 'Degree':
+        return setFilterValue(uniqueAcademic[0]);
+      case 'Pre_IAEA_Work_Experience_Category':
+        return setFilterValue(uniqueWorkExperience[0]);
+      default:
+        setFilterValue("");
+    }
     setSearchVal("");
   };
 
@@ -531,19 +540,19 @@ const IndexPage = () => {
           colorText: '#ffffff',
           fontFamily: 'Roboto',
           // colorPrimary: '#333233'
-          // colorBgContainer: '#0069B4'
+          // colorBgContainer: '#0A4C98'
         },
         components: {
           Layout: {
-            bodyBg: '#0069B4',
+            bodyBg: '#0A4C98',
           },
           Menu: {
             // horizontalItemHoverColor: '#ffffff',
             horizontalItemSelectedColor: '#ffffff', 
             // itemHoverColor: '#ffffff',
-            itemBg: '#0069B4',
-            popupBg: '#0069B4',
-            // cardBg: '#0069B4',
+            itemBg: '#0A4C98',
+            popupBg: '#0A4C98',
+            // cardBg: '#0A4C98',
           },
           Collapse: {
             headerPadding: "16px 0 0 0",
@@ -554,7 +563,18 @@ const IndexPage = () => {
     >
       <Title style={{paddingLeft: "12px"}}>Department of Safeguards Dashboard</Title>
         <Flex justify="space-between">
-          <Menu onClick={handleMenuClick} selectedKeys={[currentTab]} mode="horizontal" items={tabItems} style={{ minWidth: 0, flex: "auto", fontWeight: "bold", fontSize: 18 }}/> 
+          <Menu 
+            onClick={handleMenuClick} 
+            selectedKeys={[currentTab]} 
+            mode="horizontal" 
+            items={tabItems} 
+            style={{ 
+              minWidth: 0, 
+              flex: "auto", 
+              fontWeight: "bold", 
+              fontSize: 20 
+            }}
+          /> 
           <SearchBar />
         </Flex>
         <Layout style={mainContentStyle}>

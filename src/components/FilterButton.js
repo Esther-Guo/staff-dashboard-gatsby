@@ -42,7 +42,7 @@ const FilterButton = ({ data, onFilterClick }) => {
 
     // Function to determine size based on count
     const getSizeForCount = (count) => {
-        return 150 + (count * 10); // Base size + size increment based on count
+        return 250 + (count * 30); // Base size + size increment based on count
     };
 
     const PFP = () => {
@@ -99,7 +99,8 @@ const FilterButton = ({ data, onFilterClick }) => {
                   width: `${getSizeForCount(count)}px`,
                   height: `${getSizeForCount(count)}px`,
                   borderRadius: '50%', // Makes the button round
-                  fontSize: 18,
+                  fontSize: 26,
+                  textShadow: '1px 1px 2px gray',
                   position: 'relative'
                 }}
                 onClick={() => onFilterClick(category)}
