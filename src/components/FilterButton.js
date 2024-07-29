@@ -9,6 +9,12 @@ const RAINBOW_COLORS = [
     "#B5A3C9", "#E0BBE4", "#FFABAB", "#FAD1D1", "#B2DFDB"
   ];
 
+const RAINBOW_COLORS_GRADIENT = [
+  "#675FAD", "#CC9933", "#8BA661", "#6699CC",
+  "#C37386", "#CCAD33", "#70B2A8", "#A38879",
+  "#846792", "#B08EAD", "#CC7A7A", "#C4A1A1", "#80ABA8"
+];
+
   const container = {
     hidden: { opacity: 1, scale: 0 },
     visible: {
@@ -56,7 +62,9 @@ const FilterButton = ({ data, onFilterClick }) => {
                   height: '30%', 
                   top: '20%',
                   left: '25%',
-                  transform: 'translate(-50%, -50%)'
+                  transform: 'translate(-50%, -50%)',
+                  boxShadow: '0 18px 39px #00000033',
+                  borderRadius: '50%'
               }}
           />
           <img
@@ -66,7 +74,9 @@ const FilterButton = ({ data, onFilterClick }) => {
                   height: '20%', 
                   top: '15%',
                   left: '60%',
-                  transform: 'translate(-50%, -50%)'
+                  transform: 'translate(-50%, -50%)',
+                  boxShadow: '0 18px 39px #00000033',
+                  borderRadius: '50%'
               }}
           />
           <img
@@ -77,7 +87,9 @@ const FilterButton = ({ data, onFilterClick }) => {
                   height: '25%', 
                   top: '90%',
                   left: '80%',
-                  transform: 'translate(-50%, -50%)'
+                  transform: 'translate(-50%, -50%)',
+                  boxShadow: '0 18px 39px #00000033',
+                  borderRadius: '50%'
               }}
           />
         </>
@@ -94,7 +106,7 @@ const FilterButton = ({ data, onFilterClick }) => {
             <button
                 key={category}
                 style={{
-                  background: `radial-gradient(circle, ${RAINBOW_COLORS[index % RAINBOW_COLORS.length]} 60%, rgba(255,255,255,1) 100%)`,
+                  background: `radial-gradient(circle, ${RAINBOW_COLORS[index % RAINBOW_COLORS.length]} 11%, ${RAINBOW_COLORS_GRADIENT[index % RAINBOW_COLORS_GRADIENT.length]} 100%)`,
                   // opacity: selectedFilter && selectedFilter !== category ? 0.5 : 1,
                   width: `${getSizeForCount(count)}px`,
                   height: `${getSizeForCount(count)}px`,

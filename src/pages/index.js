@@ -14,6 +14,11 @@ const { Header, Footer, Sider, Content } = Layout;
 const { Text, Title } = Typography;
 const { Search } = Input;
 
+const pageStyles = {
+  padding: "36px 12px",
+  fontFamily: "Roboto",
+}
+
 const siderStyle = {
   // textAlign: 'center',
   // lineHeight: '120px',
@@ -532,13 +537,13 @@ const IndexPage = () => {
   const uniqueWorkExperience = Array.from(new Set(workExperience));
 
   return (
-    <div style={{padding: "36px 12px"}}>
+    <div style={pageStyles}>
       <ConfigProvider
       theme={{
         token: {
           fontSize: 16,
           colorText: '#ffffff',
-          fontFamily: 'Roboto',
+          // fontFamily: 'Roboto', // not working in Chrome
           // colorPrimary: '#333233'
           // colorBgContainer: '#0A4C98'
         },
@@ -589,4 +594,4 @@ const IndexPage = () => {
 
 export default IndexPage
 
-export const Head = () => <title>Dashboard</title>
+// export const Head = () => <title>Dashboard</title>
