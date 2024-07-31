@@ -480,14 +480,18 @@ const IndexPage = () => {
       <div>
         <ConfigProvider
           theme={{
+            // components: {
+            //   Input: {
+            //     activeBorderColor: '#fff'
+            //   }
+            // },
             token: {
               fontSize: 16,
               colorText: '#333233',
-              
             },
           }}
         >
-          <Search placeholder="" onSearch={handleSearch} style={{ width: 200, marginRight: 30 }} />
+          <Search placeholder="" onSearch={handleSearch} style={{ width: 200, marginRight: 30, marginTop: 10 }} />
         </ConfigProvider>
       </div>
     );
@@ -525,16 +529,16 @@ const IndexPage = () => {
   const generations = data.map(row => row.node.Age_Bracket);
 
   const nationalities = data.map(row => row.node.Nationality);
-  const uniqueNationalities = Array.from(new Set(nationalities));
+  const uniqueNationalities = Array.from(new Set(nationalities)).sort();
 
   const nations = data.map(row => row.node.iso_alpha);
-  const uniqueNations = Array.from(new Set(nations));
+  const uniqueNations = Array.from(new Set(nations)).sort();
 
   const academic = data.map(row => row.node.Degree);
-  const uniqueAcademic = Array.from(new Set(academic));
+  const uniqueAcademic = Array.from(new Set(academic)).sort();
 
   const workExperience = data.map(row => row.node.Pre_IAEA_Work_Experience_Category);
-  const uniqueWorkExperience = Array.from(new Set(workExperience));
+  const uniqueWorkExperience = Array.from(new Set(workExperience)).sort();
 
   return (
     <div style={pageStyles}>
@@ -566,7 +570,7 @@ const IndexPage = () => {
         },
       }}
     >
-      <Title style={{paddingLeft: "12px"}}>Department of Safeguards Dashboard</Title>
+      {/* <Title style={{paddingLeft: "12px"}}>Department of Safeguards Dashboard</Title> */}
         <Flex justify="space-between">
           <Menu 
             onClick={handleMenuClick} 
@@ -577,7 +581,8 @@ const IndexPage = () => {
               minWidth: 0, 
               flex: "auto", 
               fontWeight: "bold", 
-              fontSize: 20 
+              fontSize: 20,
+              border: "none"
             }}
           /> 
           <SearchBar />
