@@ -77,9 +77,16 @@ const FilterPanel = ({showFlag, data, isoAlphaMapping, filterValue, onFilterClic
               // height: '50px',
               border: filterValue === item ? '3px solid #E76F00' : '',
             }}>
-              <img src={`https://flagcdn.com/w80/${isoAlphaMapping[item].toLowerCase()}.png)`} />
-              {item}</Button>
-              </ConfigProvider>
+              <img 
+                src={`https://flagcdn.com/w80/${isoAlphaMapping[item].toLowerCase()}.png`} 
+                style={{
+                  width: '40px',
+                  marginRight: '10px'
+                }}
+              />
+              {item}
+            </Button>
+          </ConfigProvider>
         ))}
       </>
     )}
@@ -408,7 +415,7 @@ const IndexPage = () => {
       case 'Nationality':
         return (
           <Flex gap="large">
-            <Sider width="180" style={siderStyle}>
+            <Sider width="250" style={siderStyle}>
               <Flex gap="middle" wrap="wrap">
                 <FilterPanel showFlag={true} data={uniqueNationalities} isoAlphaMapping={isoAlphaMapping} filterValue={filterValue} onFilterClick={handleFilterClick} />
               </Flex>
@@ -439,7 +446,7 @@ const IndexPage = () => {
       case 'Pre_IAEA_Work_Experience_Category':
         return (
           <Flex gap="large">
-            <Sider width="200" style={siderStyle}>
+            <Sider width="250" style={siderStyle}>
               <Flex vertical gap="middle">
                 <FilterPanel data={uniqueWorkExperience} filterValue={filterValue} onFilterClick={handleFilterClick} />
               </Flex>
