@@ -53,45 +53,57 @@ const tabItems = [
   },
 ];
 
-const FilterPanel = ({showFlag, data, filterValue, onFilterClick}) => {
-  if (showFlag) 
-    return (
-      <>
-        {data.map(item => (
-          <Button key={item} onClick={() => onFilterClick(item)} 
-            style={{
-              backgroundImage: `url(https://flagcdn.com/w80/${item.toLowerCase()}.png)`,
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              width: '80px',
-              height: '50px',
-              border: filterValue === item ? '3px solid #E76F00' : '',
-            }}></Button>
-        ))}
-      </>
-      )
-    else
+const FilterPanel = ({showFlag, data, isoAlphaMapping, filterValue, onFilterClick}) => {
+  if (showFlag) {
     return (
       <>
         {data.map(item => (
           <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#0069B4',
-                borderRadius: 4,
-                colorText: '#333233',
-                colorBgContainer: '#EEF1F7',
-              },
-            }}
-          >
-          <Button key={item} type={filterValue === item ? 'primary' : 'default'} onClick={() => onFilterClick(item)}
-            
-          >{item}</Button>
-          </ConfigProvider>
+          theme={{
+            token: {
+              colorPrimary: '#0069B4',
+              borderRadius: 4,
+              colorText: '#333233',
+              colorBgContainer: '#EEF1F7',
+            },
+          }}
+        >
+          <Button key={item} onClick={() => onFilterClick(item)} 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              width: '250px',
+              // height: '50px',
+              border: filterValue === item ? '3px solid #E76F00' : '',
+            }}>
+              <img src={`https://flagcdn.com/w80/${isoAlphaMapping[item].toLowerCase()}.png)`} />
+              {item}</Button>
+              </ConfigProvider>
         ))}
       </>
-      )
+    )}
+    else
+      return (
+        <>
+          {data.map(item => (
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: '#0069B4',
+                  borderRadius: 4,
+                  colorText: '#333233',
+                  colorBgContainer: '#EEF1F7',
+                },
+              }}
+            >
+            <Button key={item} type={filterValue === item ? 'primary' : 'default'} onClick={() => onFilterClick(item)}
+              
+            >{item}</Button>
+            </ConfigProvider>
+          ))}
+        </>
+        )
 }
 
 const StaffCard = ({ filterType, filterValue, data }) => {
@@ -354,7 +366,7 @@ const IndexPage = () => {
     setCurrentTab(e.key);
     switch (e.key) {
       case 'Nationality':
-        return setFilterValue(uniqueNations[0]);
+        return setFilterValue(uniqueNationalities[0]);
       case 'Degree':
         return setFilterValue(uniqueAcademic[0]);
       case 'Pre_IAEA_Work_Experience_Category':
@@ -398,12 +410,12 @@ const IndexPage = () => {
           <Flex gap="large">
             <Sider width="180" style={siderStyle}>
               <Flex gap="middle" wrap="wrap">
-                <FilterPanel showFlag={true} data={uniqueNations} filterValue={filterValue} onFilterClick={handleFilterClick} />
+                <FilterPanel showFlag={true} data={uniqueNationalities} isoAlphaMapping={isoAlphaMapping} filterValue={filterValue} onFilterClick={handleFilterClick} />
               </Flex>
             </Sider>
             <Content>
               <Flex wrap="wrap" gap="middle">
-                <StaffCard filterType="iso_alpha" filterValue={filterValue} data={data} />
+                <StaffCard filterType={currentTab} filterValue={filterValue} data={data} />
               </Flex>
             </Content>
           </Flex>
@@ -531,8 +543,16 @@ const IndexPage = () => {
   const nationalities = data.map(row => row.node.Nationality);
   const uniqueNationalities = Array.from(new Set(nationalities)).sort();
 
-  const nations = data.map(row => row.node.iso_alpha);
-  const uniqueNations = Array.from(new Set(nations)).sort();
+  // const nations = data.map(row => row.node.iso_alpha);
+  // const uniqueNations = Array.from(new Set(nations)).sort();
+
+  const isoAlphaMapping = data.reduce((acc, row) => {
+    const {Nationality, iso_alpha} = row.node;
+    if (!acc.hasOwnProperty(Nationality)) {
+      acc[Nationality] = iso_alpha;
+    }
+    return acc;
+  }, {})
 
   const academic = data.map(row => row.node.Degree);
   const uniqueAcademic = Array.from(new Set(academic)).sort();
