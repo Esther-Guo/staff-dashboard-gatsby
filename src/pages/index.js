@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react"
 import { useStaticQuery, graphql } from "gatsby"
 import * as JsSearch from 'js-search';
-import { ConfigProvider, Avatar, Button, Flex, Menu, Card, Collapse, Layout, Space, Typography, Modal, Input} from 'antd';
+import { ConfigProvider, Avatar, Button, Flex, Menu, Card, Collapse, Layout, Space, Typography, Modal, Input, Col, Row} from 'antd';
 import FilterButton from "../components/FilterButton";
 import loadCSV from '../utils/loadCSV';
-import {VideoCameraTwoTone, LinkedinOutlined} from "@ant-design/icons"
+import Icon, {VideoCameraTwoTone, LinkedinOutlined, RightCircleOutlined, GlobalOutlined, BankOutlined, TagOutlined, TrophyOutlined,} from "@ant-design/icons"
 import ReactPlayer from 'react-player'
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -13,6 +13,14 @@ const { Meta } = Card;
 const { Header, Footer, Sider, Content } = Layout;
 const { Text, Title } = Typography;
 const { Search } = Input;
+
+const HatSvg = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="20" height="20" viewBox="0 0 20 20">
+  <path fill="#000000" d="M18.658 7.026l-9-3c-0.103-0.034-0.214-0.034-0.316 0l-9 3c-0.204 0.068-0.342 0.259-0.342 0.474s0.138 0.406 0.342 0.474l2.658 0.886v2.64c0 0.133 0.053 0.26 0.146 0.354 0.088 0.088 2.194 2.146 6.354 2.146 1.513 0 2.924-0.272 4.195-0.809 0.254-0.107 0.373-0.401 0.266-0.655s-0.401-0.373-0.655-0.266c-1.147 0.485-2.427 0.73-3.805 0.73-1.945 0-3.376-0.504-4.234-0.926-0.635-0.313-1.060-0.629-1.266-0.799v-2.081l5.342 1.781c0.051 0.017 0.105 0.026 0.158 0.026s0.107-0.009 0.158-0.026l5.342-1.781v0.892c-0.582 0.206-1 0.762-1 1.414 0 0.611 0.367 1.137 0.892 1.371l-0.877 3.508c-0.037 0.149-0.004 0.308 0.091 0.429s0.24 0.192 0.394 0.192h2c0.154 0 0.299-0.071 0.394-0.192s0.128-0.28 0.091-0.429l-0.877-3.508c0.525-0.234 0.892-0.76 0.892-1.371 0-0.652-0.418-1.208-1-1.414v-1.226l2.658-0.886c0.204-0.068 0.342-0.259 0.342-0.474s-0.138-0.406-0.342-0.474zM15.5 11c0.276 0 0.5 0.224 0.5 0.5s-0.224 0.5-0.5 0.5-0.5-0.224-0.5-0.5 0.224-0.5 0.5-0.5zM15.14 16l0.36-1.438 0.36 1.438h-0.719zM15.46 7.986l-5.877-0.98c-0.273-0.045-0.53 0.139-0.575 0.411s0.139 0.53 0.411 0.575l4.014 0.669-3.932 1.311-7.419-2.473 7.419-2.473 7.419 2.473-1.459 0.486z"/>
+  </svg>
+);
+
+const HatIcon = (props) => <Icon component={HatSvg} {...props} />;
 
 const pageStyles = {
   padding: "36px 12px",
@@ -74,8 +82,10 @@ const FilterPanel = ({showFlag, data, isoAlphaMapping, filterValue, onFilterClic
               alignItems: 'center',
               justifyContent: 'flex-start',
               width: '250px',
-              // height: '50px',
+              height: '40px',
               border: filterValue === item ? '3px solid #E76F00' : '',
+              fontWeight: 'bold'
+
             }}>
               <img 
                 src={`https://flagcdn.com/w80/${isoAlphaMapping[item].toLowerCase()}.png`} 
@@ -104,9 +114,16 @@ const FilterPanel = ({showFlag, data, isoAlphaMapping, filterValue, onFilterClic
                 },
               }}
             >
-            <Button key={item} type={filterValue === item ? 'primary' : 'default'} onClick={() => onFilterClick(item)}
-              
-            >{item}</Button>
+              <Button key={item} 
+                type={filterValue === item ? 'primary' : 'default'} 
+                onClick={() => onFilterClick(item)}
+                style={{
+                  height: '40px',
+                  paddingTop: '10px',
+                  paddingBottom: '10px',
+                  fontWeight: 'bold'
+                }}
+              >{item}</Button>
             </ConfigProvider>
           ))}
         </>
@@ -133,6 +150,48 @@ const StaffCard = ({ filterType, filterValue, data }) => {
           },
         }}
       > 
+      <Modal 
+          open={isModalOpen[idx]} 
+          onCancel={() => toggleModal(idx)}
+          footer={null} 
+          mask={true}
+          centered={true}
+          width={750}
+        >
+          <Flex vertical>
+              <Text strong>
+                Academic
+              </Text>
+                {
+                  row.node.Academic
+                    .split('\n')
+                    .map(line=>line.trim())
+                    .filter(line=>line.startsWith('•'))
+                      .map(item => (<Text>{item}</Text>))
+                }
+              <Text strong>
+                Current Role Summary
+              </Text>
+              <Text>
+                {row.node.Current_Role_Summary}
+              </Text>
+              <Text strong>
+                Pre-IAEA Work Experience
+              </Text>
+                {
+                  row.node.Pre_IAEA_Work_Experience
+                    .split('\n')
+                    .map(line=>line.trim())
+                    .filter(line=>line.startsWith('•'))
+                      .map(item => (<Text>{item}</Text>))
+                }
+            </Flex>
+          {/* https://github.com/CookPete/react-player */}
+          <ReactPlayer 
+            url={row.node.Video}
+            controls={true}
+          />
+        </Modal>
       <AnimatePresence mode="wait">
     <motion.div key={filterValue+idx}
             initial={{ y: 10, opacity: 0 }}
@@ -140,7 +199,7 @@ const StaffCard = ({ filterType, filterValue, data }) => {
             // exit={{ y: -10, opacity: 0 }}
             transition={{ duration: 0.2 }}>
       <Card  
-      
+      onClick={() => toggleModal(idx)}
       style={{
         width: 300,
         
@@ -157,54 +216,53 @@ const StaffCard = ({ filterType, filterValue, data }) => {
       }}
       >
  
-        <Modal 
-          open={isModalOpen[idx]} 
-          onCancel={() => toggleModal(idx)}
-          footer={null} 
-          mask={true}
-          centered={true}
-          width={750}
-        >
-          <Flex vertical>
-              <Text strong>
-                Academic
-              </Text>
-              <Text>
-                {row.node.Academic}
-              </Text>
-              <Text strong>
-                Current Role Summary
-              </Text>
-              <Text>
-                {row.node.Current_Role_Summary}
-              </Text>
-              <Text strong>
-                Pre-IAEA Work Experience
-              </Text>
-              <Text>
-                {row.node.Pre_IAEA_Work_Experience}
-              </Text>
-            </Flex>
-          {/* https://github.com/CookPete/react-player */}
-          <ReactPlayer 
-            url={row.node.Video}
-            controls={true}
-          />
-        </Modal>
+        
 
         <Avatar src={row.node.PFP} size={70} style={{marginBottom: "4px"}}/>
-        <Title level={4}>{row.node.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={() => toggleModal(idx)}/></Title>
+        <Title level={4}>{row.node.Name}</Title>
         <Text>{row.node.Pronouns}</Text>
         <Text italic style={{marginBottom: '4px', textAlign: 'center'}}>
           {row.node.Current_Position}
           {row.node.LinkedIN_Profile && <LinkedinOutlined style={{fontSize: '16px', color: '#0A4C98', marginLeft: '4px'}} onClick={() => window.open(`${row.node.LinkedIN_Profile}`)}/>}
         </Text>
-        <Flex vertical>
+        <Row gutter={[16, 16]} style={{margin: '10px 0'}}>
+            <Col span={12}>
+              <Flex vertical align="center">
+                <GlobalOutlined style={{fontSize: '20px', color: '#0A4C98', marginBottom: '4px'}}/>
+                <Text style={{textAlign: 'center'}}>{row.node.Nationality}</Text>
+              </Flex>
+            </Col>
+            
+            <Col span={12}>
+              <Flex vertical align="center">
+                {/* <HatIcon style={{fontSize: '20px', color: '#0A4C98', marginBottom: '4px'}}/> */}
+                <BankOutlined style={{fontSize: '20px', color: '#0A4C98', marginBottom: '4px'}} />
+                <Text style={{textAlign: 'center'}}>{row.node.Degree}</Text>
+              </Flex>
+            </Col>
+
+
+            <Col span={12}>
+              <Flex vertical align="center">
+                <TrophyOutlined style={{fontSize: '20px', color: '#0A4C98', marginBottom: '4px'}} />
+                <Text style={{textAlign: 'center'}}>{row.node.Pre_IAEA_Work_Experience_Category}</Text>
+              </Flex>
+            </Col>
+             
+            <Col span={12}>
+              <Flex vertical align="center">
+                <TagOutlined style={{fontSize: '20px', color: '#0A4C98', marginBottom: '4px'}} />
+                <Text style={{textAlign: 'center'}}>{row.node.Age_Bracket}</Text>
+              </Flex>
+            </Col>
+          </Row>
+        {/* <Flex vertical>
           <Text>Nationality: {row.node.Nationality}</Text>
           <Text>Academic: {row.node.Degree}</Text>
           <Text>Pre-IAEA Experience: {row.node.Pre_IAEA_Work_Experience_Category}</Text>
           <Text>Age Bracket: {row.node.Age_Bracket}</Text>
-        </Flex>
+        </Flex> */}
+        <Text onClick={(e) => {toggleModal(idx); e.stopPropagation();}}>Click for details <RightCircleOutlined style={{fontSize: '16px', color: ''}} /></Text>
         {/* <Collapse ghost items={[
           {
             key: '1',
@@ -242,24 +300,6 @@ const SearchResultCard = ({data}) => {
             },
           }}
         >  
-        <Card
-        
-        style={{
-          width: 300,
-        }}
-        styles={{
-          body: {
-            height: "100%",
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            // justifyContent: 'space-between', // Not sure why it has gap pn top&bottom
-            padding: '10px',
-            
-          }
-        }}
-        >
-          
           <Modal 
             open={isModalOpen[idx]} 
             onCancel={() => toggleModal(idx)} 
@@ -272,9 +312,13 @@ const SearchResultCard = ({data}) => {
               <Text strong>
                 Academic
               </Text>
-              <Text>
-                {staff.Academic}
-              </Text>
+                {
+                  staff.Academic
+                    .split('\n')
+                    .map(line=>line.trim())
+                    .filter(line=>line.startsWith('•'))
+                      .map(item => (<Text>{item}</Text>))
+                }
               <Text strong>
                 Current Role Summary
               </Text>
@@ -284,9 +328,13 @@ const SearchResultCard = ({data}) => {
               <Text strong>
                 Pre-IAEA Work Experience
               </Text>
-              <Text>
-                {staff["Pre-IAEA Work Experience"]}
-              </Text>
+                {
+                  staff["Pre-IAEA Work Experience"]
+                    .split('\n')
+                    .map(line=>line.trim())
+                    .filter(line=>line.startsWith('•'))
+                      .map(item => (<Text>{item}</Text>))
+                }
             </Flex>
             {/* https://github.com/CookPete/react-player */}
             <ReactPlayer 
@@ -294,20 +342,70 @@ const SearchResultCard = ({data}) => {
               controls={true}
             />
           </Modal>
-
+        <Card
+          onClick={() => toggleModal(idx)}
+          style={{
+            width: 300,
+          }}
+          styles={{
+            body: {
+              height: "100%",
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              // justifyContent: 'space-between', // Not sure why it has gap pn top&bottom
+              padding: '10px',
+              
+            }
+          }}
+        >
+          
           <Avatar src={staff.PFP} size={70} style={{marginBottom: "4px"}}/>
-          <Title level={4}>{staff.Name} <VideoCameraTwoTone style={{fontSize: '16px', color: ''}} onClick={() => toggleModal(idx)}/></Title>
+          <Title level={4}>{staff.Name}</Title>
           <Text>{staff.Pronouns}</Text>
           <Text italic style={{marginBottom: '4px', textAlign: 'center'}}>
             {staff["Current Position"]}
             {staff["LinkedIN Profile"] && <LinkedinOutlined style={{fontSize: '16px', color: '#0A4C98', marginLeft: '4px'}} onClick={() => window.open(staff["LinkedIN Profile"])}/>}
           </Text>
-          <Flex vertical>
+          <Row gutter={[16, 16]} style={{margin: '10px 0'}}>
+            <Col span={12}>
+              <Flex vertical align="center">
+                <GlobalOutlined style={{fontSize: '20px', color: '#0A4C98', marginBottom: '4px'}}/>
+                <Text style={{textAlign: 'center'}}>{staff.Nationality}</Text>
+              </Flex>
+            </Col>
+            
+            <Col span={12}>
+              <Flex vertical align="center">
+                {/* <HatIcon style={{fontSize: '20px', color: '#0A4C98', marginBottom: '4px'}}/> */}
+                <BankOutlined style={{fontSize: '20px', color: '#0A4C98', marginBottom: '4px'}} />
+                <Text style={{textAlign: 'center'}}>{staff.Degree}</Text>
+              </Flex>
+            </Col>
+
+
+            <Col span={12}>
+              <Flex vertical align="center">
+                <TrophyOutlined style={{fontSize: '20px', color: '#0A4C98', marginBottom: '4px'}} />
+                <Text style={{textAlign: 'center'}}>{staff["Pre-IAEA Work Experience Category"]}</Text>
+              </Flex>
+            </Col>
+             
+            <Col span={12}>
+              <Flex vertical align="center">
+                <TagOutlined style={{fontSize: '20px', color: '#0A4C98', marginBottom: '4px'}} />
+                <Text style={{textAlign: 'center'}}>{staff["Age Bracket"]}</Text>
+              </Flex>
+            </Col>
+          </Row>
+          {/* <Flex vertical>
             <Text>Nationality: {staff.Nationality}</Text>
             <Text>Academic: {staff.Degree}</Text>
             <Text>Pre-IAEA Experience: {staff["Pre-IAEA Work Experience Category"]}</Text>
             <Text>Age Bracket: {staff["Age Bracket"]}</Text>
-          </Flex>
+          </Flex> */}
+        <Text onClick={(e) => {toggleModal(idx); e.stopPropagation();}}>Click for details <RightCircleOutlined style={{fontSize: '16px', color: ''}} /></Text>
+
           {/* <Meta
             avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />}
             title={staff.Name}
