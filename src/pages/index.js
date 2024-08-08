@@ -188,6 +188,7 @@ const StaffCard = ({ filterType, filterValue, data }) => {
             </Flex>
           {/* https://github.com/CookPete/react-player */}
           <ReactPlayer 
+            // url={'/video/demo.mp4'}
             url={row.node.Video}
             controls={true}
           />
@@ -218,7 +219,8 @@ const StaffCard = ({ filterType, filterValue, data }) => {
  
         
 
-        <Avatar src={row.node.PFP} size={70} style={{marginBottom: "4px"}}/>
+        {/* <Avatar src={row.node.PFP} size={70} style={{marginBottom: "4px"}}/> */}
+        <Avatar src={'pfp/woman_1.png'} size={70} style={{marginBottom: "4px"}}/>
         <Title level={4}>{row.node.Name}</Title>
         <Text>{row.node.Pronouns}</Text>
         <Text italic style={{marginBottom: '4px', textAlign: 'center'}}>
@@ -360,7 +362,8 @@ const SearchResultCard = ({data}) => {
           }}
         >
           
-          <Avatar src={staff.PFP} size={70} style={{marginBottom: "4px"}}/>
+          {/* <Avatar src={staff.PFP} size={70} style={{marginBottom: "4px"}}/> */}
+          <Avatar src={'pfp/woman_1.png'} size={70} style={{marginBottom: "4px"}}/>
           <Title level={4}>{staff.Name}</Title>
           <Text>{staff.Pronouns}</Text>
           <Text italic style={{marginBottom: '4px', textAlign: 'center'}}>
